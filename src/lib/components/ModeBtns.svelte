@@ -1,10 +1,10 @@
 <script lang="ts">
 	let {
-		defaultValue = 'off',
+		value = $bindable('off'),
 		id = '',
 
 	}: {
-		defaultValue?: 'off' | 'pk' | 'hs' | 'ls';
+		value?: 'off' | 'pk' | 'hs' | 'ls';
 		id?: string;
 	} = $props();
 
@@ -20,7 +20,8 @@
 				name="{id}"
 				id="{id}-{mode}"
 				value="{mode}"
-				checked={defaultValue === mode}
+				checked={value === mode}
+			onchange={() => value = mode}
 			/>
 			{mode}
 		</label>
@@ -30,11 +31,10 @@
 <style>
     @reference "../../routes/layout.css";
 	.btn {
-		box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 35%);
-		@apply transition-colors duration-100;
+	    @apply transition-colors duration-100;
         box-shadow:
-            inset 0  2px 0 0 #9C9996,
-            inset 0 -2px 0 0 rgba(0,0,0,0.5),
+            inset 0  2px 1px 0 #9C9996,
+            inset 0 -2px 1px 0 rgba(0,0,0,0.5),
             0px 5px 6px 0px rgba(0, 0, 0, 35%);
     }
 
