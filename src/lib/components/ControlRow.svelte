@@ -7,9 +7,11 @@
 	} = $props();
 
 	let selectedMode = $state<'off' | 'pk' | 'hs' | 'ls'>('off');
+	let qVal = $state(1.0);
 
 	import Slider from "$lib/components/Slider.svelte";
 	import ModeBtns from "$lib/components/ModeBtns.svelte";
+	import Knob from "$lib/components/Knob.svelte";
 </script>
 
 <div class="bg-fg rounded-sm p-4 gap-2 inline-flex items-center">
@@ -20,4 +22,5 @@
 		<Slider mode="gain" id={`slider-G-${rowNo}`} width={400} disabled={selectedMode === 'off'} />
 		<Slider mode="freq" id={`slider-F-${rowNo}`} width={400} disabled={selectedMode === 'off'} />
 	</div>
+	<Knob bind:value={qVal} label="Q" min={0.1} max={10} step={0.01} angleStart={210} angleEnd={-30} />
 </div>
