@@ -45,8 +45,7 @@
 		{min}
 		{max}
 		{step}
-		style="width: {width}px;"
-		class="h-2 mr-2 rounded-full bg-bg outline-0"
+		class="h-2 mr-2 flex-1 min-w-0 rounded-full bg-bg outline-0"
 		type="range"
 		{name}
 		{id}

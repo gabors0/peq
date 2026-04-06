@@ -51,7 +51,7 @@
 			indicatorX = indicator.x;
 			indicatorY = indicator.y;
 			indicatorAngle = indicator.angle;
-			value = parseFloat((_knob.val()).toFixed(2));
+			value = parseFloat(_knob.val().toFixed(2));
 		});
 
 		setupKnob(knob, containerEl);
@@ -59,46 +59,49 @@
 </script>
 
 <div class="flex flex-row items-center gap-x-1">
-<div class="ui-knob-container {className}" bind:this={containerEl}>
-	<div class="ui-knob ui-knob-shadow"></div>
-	<div
-		class="ui-knob-indicator"
-		style="left: {indicatorX}px; top: {indicatorY}px; transform: rotate({-indicatorAngle}deg);"
-	></div>
-	<input
-		bind:this={inputEl}
-		type="range"
-		{name}
-		{min}
-		{max}
-		{value}
-		data-angle-start={angleStart}
-		data-angle-end={angleEnd}
-		data-indicator-auto-position={indicatorAutoPosition}
-		data-indicator-auto-rotate={indicatorAutoRotate}
-		data-indicator-radius={indicatorRadius}
-		data-angle-scroll-ratio="0.012"
-		data-angle-slide-ratio="0.5"
-		hidden
-		{...rest}
-	/>
-</div>
-<Display {label} content={String(value)} {disabled} />
+	<div class="ui-knob-container {className}" bind:this={containerEl}>
+		<div class="ui-knob ui-knob-shadow"></div>
+		<div class="ui-knob-indicator" style="transform: rotate({-indicatorAngle}deg);"></div>
+		<input
+			bind:this={inputEl}
+			type="range"
+			{name}
+			{min}
+			{max}
+			{value}
+			data-angle-start={angleStart}
+			data-angle-end={angleEnd}
+			data-indicator-auto-position={indicatorAutoPosition}
+			data-indicator-auto-rotate={indicatorAutoRotate}
+			data-indicator-radius={indicatorRadius}
+			data-angle-scroll-ratio="0.012"
+			data-angle-slide-ratio="0.5"
+			hidden
+			{...rest}
+		/>
+	</div>
+	<Display {label} content={String(value)} isOff={disabled} />
 </div>
 
 <style>
-    @reference "../../routes/layout.css";
+	@reference "../../routes/layout.css";
 	.ui-knob-container {
-	    @apply relative w-20 h-20 overflow-hidden select-none;
+		@apply relative h-20 w-20 select-none;
+		zoom: 0.75;
 	}
 
 	.ui-knob {
-	    @apply absolute top-1/2 left-1/2 w-16 h-16 rounded-[50%] -mt-8 -ml-8 outline-3 outline-checked;
-		background: linear-gradient(-180deg, #CCC9C6 0%, #9C9996 100%);
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		@apply absolute top-1/2 left-1/2 -mt-8 -ml-8 h-16 w-16 rounded-[50%] outline-3 outline-checked;
+		background: linear-gradient(to bottom left, #ccc9c6 0%, #9c9996 100%);
+		box-shadow: -4px 8px 6px rgba(0, 0, 0, 0.5);
 	}
 
 	.ui-knob-indicator {
-	    @apply absolute w-2.5 h-1.5 bg-text -ml-1.5 -mt-1 rounded-xs;
+		@apply absolute h-1.5 rounded-l-full bg-text;
+		top: 50%;
+		left: 50%;
+		width: 34px;
+		margin-top: -3px;
+		transform-origin: 0% 50%;
 	}
 </style>

@@ -14,13 +14,13 @@
 	import Knob from "$lib/components/Knob.svelte";
 </script>
 
-<div class="bg-fg rounded-sm p-4 gap-2 inline-flex items-center">
-    <div class="font-bold text-fg bg-text px-2 self-stretch flex items-center rounded-sm">{rowNo}</div>
+<div class="bg-fg rounded-sm p-4 gap-2 flex items-center">
+    <div class="font-bold text-fg bg-text px-2 self-stretch w-9 flex justify-center items-center rounded-sm">{rowNo}</div>
 	<ModeBtns id={`mode-${rowNo}`} bind:value={selectedMode} />
     <span class="border-l border-3 my-0.5 rounded-md self-stretch border-text"></span>
-	<div class="flex flex-col gap-2">
-		<Slider mode="gain" id={`slider-G-${rowNo}`} width={400} disabled={selectedMode === 'off'} />
-		<Slider mode="freq" id={`slider-F-${rowNo}`} width={400} disabled={selectedMode === 'off'} />
+	<div class="flex flex-col gap-2 flex-1 min-w-0">
+		<Slider mode="gain" id={`slider-G-${rowNo}`} disabled={selectedMode === 'off'} />
+		<Slider mode="freq" id={`slider-F-${rowNo}`} disabled={selectedMode === 'off'} />
 	</div>
-	<Knob bind:value={qVal} label="Q" min={0.1} max={10} step={0.01} angleStart={210} angleEnd={-30} />
+	<Knob bind:value={qVal} label="Q" min={0.1} max={10} step={0.01} angleStart={210} angleEnd={-30} disabled={selectedMode === 'off'} />
 </div>
