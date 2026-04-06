@@ -41,13 +41,14 @@
 	let indicatorX = $state(0);
 	let indicatorY = $state(0);
 	let indicatorAngle = $state(0);
+	let knob: any;
 
 	onMount(() => {
 		// Svelte sets value as a DOM property, not an HTML attribute.
 		// The Knob constructor reads from getAttribute, so set it explicitly.
 		inputEl.setAttribute('value', String(value));
 
-		const knob = new KnobCore(inputEl, (_knob: any, indicator: any) => {
+		knob = new KnobCore(inputEl, (_knob: any, indicator: any) => {
 			indicatorX = indicator.x;
 			indicatorY = indicator.y;
 			indicatorAngle = indicator.angle;
@@ -56,6 +57,8 @@
 
 		setupKnob(knob, containerEl);
 	});
+
+
 </script>
 
 <div class="flex flex-row items-center gap-x-1">
@@ -80,7 +83,7 @@
 			{...rest}
 		/>
 	</div>
-	<Display {label} content={String(value)} isOff={disabled} />
+	<Display {label} {value} {min} {max} isOff={disabled} onchange={(v) => knob?.val(v)} />
 </div>
 
 <style>

@@ -33,8 +33,15 @@
 		return (Math.log(f) - logMin) / (logMax - logMin);
 	}
 
-	let raw = $derived(mode === 'freq' ? toSlider(1000) : (config[mode].min + config[mode].max) / 2);
+	let raw = $state(mode === 'freq' ? toSlider(1000) : (config[mode].min + config[mode].max) / 2);
 	let value = $derived(mode === 'freq' ? toFreq(raw) : raw);
+
+	const displayMin = mode === 'freq' ? 20 : config[mode].min;
+	const displayMax = mode === 'freq' ? 20000 : config[mode].max;
+
+	function handleDisplayChange(v: number) {
+		raw = mode === 'freq' ? toSlider(v) : v;
+	}
 
 	import Display from '$lib/components/Display.svelte';
 </script>
@@ -50,7 +57,7 @@
 		{name}
 		{id}
 	/>
-	<Display {label} content={mode === 'gain' && value > 0 ? `+${value}` : String(value)} isOff={disabled} />
+	<Display {label} {value} min={displayMin} max={displayMax} isOff={disabled} onchange={handleDisplayChange} />
 </div>
 
 <style>
