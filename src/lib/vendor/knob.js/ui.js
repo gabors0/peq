@@ -1,4 +1,5 @@
 // https://github.com/jherrm/knobs - demo/asset/ui.js
+// heavily modified to work with svelte and text inputs
 const activeKnobs = {};
 
 function getPlatform() {
