@@ -1,9 +1,12 @@
 <script lang="ts">
 	import PushButton from '$lib/components/PushButton.svelte';
 	import ControlRow from '$lib/components/ControlRow.svelte';
+	import Slider from '$lib/components/Slider.svelte';
 
 	type BandMode = 'off' | 'pk' | 'hs' | 'ls';
 	type Band = { mode: BandMode; gain: number; freq: number; q: number };
+
+	let preamp = $state(0);
 
 	let bands = $state<Band[]>(
 		Array.from({ length: 20 }, () => ({ mode: 'off' as BandMode, gain: 0, freq: 1000, q: 1.0 }))
@@ -13,13 +16,18 @@
 
 	function updateExport() {
 		let filterNo = 1;
-		exportString = bands
+		const lines = bands
 			.filter((b) => b.mode !== 'off')
 			.map(
 				(b) =>
 					`Filter ${filterNo++}: ON ${b.mode.toUpperCase()} Fc ${b.freq} Hz Gain ${b.gain.toFixed(1)} dB Q ${b.q.toFixed(2)}`
-			)
-			.join('\n');
+			);
+
+		if (preamp !== 0) {
+			lines.unshift(`Preamp: ${preamp.toFixed(1)} dB`);
+		}
+
+		exportString = lines.join('\n');
 	}
 
 	function downloadFile() {
@@ -88,16 +96,24 @@
 			<PushButton size="lg" onclick={copyToClipboard}>{copied ? 'copied!' : 'copy'}</PushButton>
 		</div>
 	</div>
-	<div class="overflow-x-hidden overflow-y-auto rounded-lg bg-fg p-2">
-		{#each bands as band, i}
-			<ControlRow
-				rowNo={i + 1}
-				bind:mode={band.mode}
-				bind:gain={band.gain}
-				bind:freq={band.freq}
-				bind:q={band.q}
-			/>
-		{/each}
+	<div class="flex min-h-0 gap-2 rounded-lg bg-fg p-2">
+		<div
+			class="flex min-h-0 flex-col items-center gap-1 rounded-sm px-2 py-2 outline-3 outline-text"
+		>
+			<b class="text-xs text-text">PRE</b>
+			<Slider mode="gain" orientation="vertical" id="preamp" bind:value={preamp} />
+		</div>
+		<div class="min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+			{#each bands as band, i}
+				<ControlRow
+					rowNo={i + 1}
+					bind:mode={band.mode}
+					bind:gain={band.gain}
+					bind:freq={band.freq}
+					bind:q={band.q}
+				/>
+			{/each}
+		</div>
 	</div>
 	<div class="rounded-lg bg-fg p-2">D</div>
 </div>

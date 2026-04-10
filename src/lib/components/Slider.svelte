@@ -10,7 +10,7 @@
 	}: {
 		width?: number;
 		mode?: 'gain' | 'freq' | 'q';
-		orientation?: 'horizontal' | 'vertical'; //todo
+		orientation?: 'horizontal' | 'vertical';
 		name?: string;
 		id?: string;
 		disabled?: boolean;
@@ -49,6 +49,21 @@
 	import Display from '$lib/components/Display.svelte';
 </script>
 
+{#if orientation === 'vertical'}
+<div class="slider-vertical flex flex-1 min-h-0 flex-col items-center gap-y-1">
+	<input
+		bind:value={raw}
+		{min}
+		{max}
+		{step}
+		class="vertical-range rounded-full bg-bg outline-0"
+		type="range"
+		{name}
+		{id}
+	/>
+	<Display {label} value={displayValue} min={displayMin} max={displayMax} isOff={disabled} onchange={handleDisplayChange} />
+</div>
+{:else}
 <div class="flex flex-row items-center gap-x-1">
 	<input
 		bind:value={raw}
@@ -62,11 +77,20 @@
 	/>
 	<Display {label} value={displayValue} min={displayMin} max={displayMax} isOff={disabled} onchange={handleDisplayChange} />
 </div>
+{/if}
 
 <style>
 	@reference "../../routes/layout.css";
 	input {
 		-webkit-appearance: none;
+	}
+
+	.vertical-range {
+		writing-mode: vertical-lr;
+		direction: rtl;
+		width: 8px;
+		flex: 1 1 0;
+		min-height: 0;
 	}
 
 	input::-webkit-slider-thumb {
@@ -95,6 +119,36 @@
 		box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 30%);
 		background: linear-gradient(
 			to right,
+			#666563 15%,
+			#ccc9c6 16%,
+			#999794 45%,
+			#1c1b1b 45%,
+			#1c1b1b 55%,
+			#6c6b69 55%,
+			#666563 85%,
+			#ccc9c6 86%
+		);
+	}
+
+	.vertical-range::-webkit-slider-thumb {
+		@apply h-7.5 w-5;
+		background: linear-gradient(
+			to bottom,
+			#666563 15%,
+			#ccc9c6 16%,
+			#999794 45%,
+			#1c1b1b 45%,
+			#1c1b1b 55%,
+			#6c6b69 55%,
+			#666563 85%,
+			#ccc9c6 86%
+		);
+	}
+	.vertical-range::-moz-range-thumb {
+		width: 20px;
+		height: 30px;
+		background: linear-gradient(
+			to bottom,
 			#666563 15%,
 			#ccc9c6 16%,
 			#999794 45%,
