@@ -5,7 +5,8 @@
 		orientation = 'horizontal',
 		name = '',
 		id = '',
-		disabled = false
+		disabled = false,
+		value = $bindable(0),
 	}: {
 		width?: number;
 		mode?: 'gain' | 'freq' | 'q';
@@ -13,6 +14,7 @@
 		name?: string;
 		id?: string;
 		disabled?: boolean;
+		value?: number;
 	} = $props();
 
 	const config = {
@@ -34,7 +36,8 @@
 	}
 
 	let raw = $state(mode === 'freq' ? toSlider(1000) : (config[mode].min + config[mode].max) / 2);
-	let value = $derived(mode === 'freq' ? toFreq(raw) : raw);
+	let displayValue = $derived(mode === 'freq' ? toFreq(raw) : raw);
+	$effect(() => { value = displayValue; });
 
 	const displayMin = mode === 'freq' ? 20 : config[mode].min;
 	const displayMax = mode === 'freq' ? 20000 : config[mode].max;
@@ -57,7 +60,7 @@
 		{name}
 		{id}
 	/>
-	<Display {label} {value} min={displayMin} max={displayMax} isOff={disabled} onchange={handleDisplayChange} />
+	<Display {label} value={displayValue} min={displayMin} max={displayMax} isOff={disabled} onchange={handleDisplayChange} />
 </div>
 
 <style>
@@ -84,9 +87,22 @@
 		);
 	}
 	input::-moz-range-thumb {
-		width: 25px;
-		height: 25px;
-		background: #04aa6d;
+		width: 30px;
+		height: 20px;
+		border: none;
+		border-radius: 2px;
 		cursor: pointer;
+		box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 30%);
+		background: linear-gradient(
+			to right,
+			#666563 15%,
+			#ccc9c6 16%,
+			#999794 45%,
+			#1c1b1b 45%,
+			#1c1b1b 55%,
+			#6c6b69 55%,
+			#666563 85%,
+			#ccc9c6 86%
+		);
 	}
 </style>

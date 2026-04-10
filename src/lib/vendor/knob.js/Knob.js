@@ -1,3 +1,4 @@
+// @ts-nocheck
 // https://github.com/jherrm/knobs
 let Knob;
 (function (undefined) {
