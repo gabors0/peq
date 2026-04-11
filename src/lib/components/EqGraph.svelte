@@ -9,12 +9,12 @@
 		preamp: number;
 	} = $props();
 
-	// --- Coordinate mapping ---
-	const W = 1000;
-	const H = 400;
+	// --- Coordinate mapping (driven by measured container size) ---
+	let W = $state(1000);
+	let H = $state(400);
 	const pad = { top: 20, right: 30, bottom: 25, left: 40 };
-	const plotW = W - pad.left - pad.right;
-	const plotH = H - pad.top - pad.bottom;
+	let plotW = $derived(W - pad.left - pad.right);
+	let plotH = $derived(H - pad.top - pad.bottom);
 
 	const freqMin = 20;
 	const freqMax = 20000;
@@ -30,28 +30,76 @@
 		return pad.top + ((dbMax - db) / (dbMax - dbMin)) * plotH;
 	}
 
-	// --- Frequency response per band ---
-	function bandResponse(band: Band, f: number): number {
-		if (band.mode === 'off' || band.gain === 0) return 0;
-		const fc = band.freq;
-		const G = band.gain;
-		const Q = band.q;
+	// --- Biquad frequency response (RBJ Audio EQ Cookbook) ---
+	const SAMPLE_RATE = 48000;
+
+	type Coeffs = { b0: number; b1: number; b2: number; a0: number; a1: number; a2: number };
+
+	function biquadCoeffs(band: Band): Coeffs {
+		const A = Math.pow(10, band.gain / 40);
+		const w0 = (2 * Math.PI * band.freq) / SAMPLE_RATE;
+		const sinW = Math.sin(w0);
+		const cosW = Math.cos(w0);
+		const alpha = sinW / (2 * band.q);
 
 		if (band.mode === 'pk') {
-			const bw = 1 / Q;
-			const ratio = f / fc - fc / f;
-			return G * (bw * bw) / (ratio * ratio + bw * bw);
+			return {
+				b0: 1 + alpha * A,
+				b1: -2 * cosW,
+				b2: 1 - alpha * A,
+				a0: 1 + alpha / A,
+				a1: -2 * cosW,
+				a2: 1 - alpha / A
+			};
 		}
 
-		// Shelf slope factor from Q
-		const n = Q * 0.5;
+		const sqrtA = Math.sqrt(A);
+		const twoSqrtAalpha = 2 * sqrtA * alpha;
 
 		if (band.mode === 'ls') {
-			return G / (1 + Math.pow(fc / f, 2 * n));
+			return {
+				b0: A * (A + 1 - (A - 1) * cosW + twoSqrtAalpha),
+				b1: 2 * A * (A - 1 - (A + 1) * cosW),
+				b2: A * (A + 1 - (A - 1) * cosW - twoSqrtAalpha),
+				a0: A + 1 + (A - 1) * cosW + twoSqrtAalpha,
+				a1: -2 * (A - 1 + (A + 1) * cosW),
+				a2: A + 1 + (A - 1) * cosW - twoSqrtAalpha
+			};
 		}
 
 		// hs
-		return G / (1 + Math.pow(f / fc, 2 * n));
+		return {
+			b0: A * (A + 1 + (A - 1) * cosW + twoSqrtAalpha),
+			b1: -2 * A * (A - 1 + (A + 1) * cosW),
+			b2: A * (A + 1 + (A - 1) * cosW - twoSqrtAalpha),
+			a0: A + 1 - (A - 1) * cosW + twoSqrtAalpha,
+			a1: 2 * (A - 1 - (A + 1) * cosW),
+			a2: A + 1 - (A - 1) * cosW - twoSqrtAalpha
+		};
+	}
+
+	function biquadMagnitudeDb(c: Coeffs, freq: number): number {
+		const w = (2 * Math.PI * freq) / SAMPLE_RATE;
+		const cosW = Math.cos(w);
+		const cos2W = Math.cos(2 * w);
+		const sinW = Math.sin(w);
+		const sin2W = Math.sin(2 * w);
+
+		const numReal = c.b0 + c.b1 * cosW + c.b2 * cos2W;
+		const numImag = c.b1 * sinW + c.b2 * sin2W;
+		const denReal = c.a0 + c.a1 * cosW + c.a2 * cos2W;
+		const denImag = c.a1 * sinW + c.a2 * sin2W;
+
+		const num = numReal * numReal + numImag * numImag;
+		const den = denReal * denReal + denImag * denImag;
+
+		if (den === 0) return 0;
+		return 10 * Math.log10(num / den);
+	}
+
+	function bandResponse(band: Band, f: number): number {
+		if (band.mode === 'off' || band.gain === 0) return 0;
+		return biquadMagnitudeDb(biquadCoeffs(band), f);
 	}
 
 	// --- Sample points (logarithmically spaced) ---
@@ -78,19 +126,33 @@
 	let markers = $derived(
 		bands
 			.filter((b) => b.mode !== 'off')
-			.map((b) => ({
-				x: toX(b.freq),
-				y: toY(Math.max(dbMin, Math.min(dbMax, b.gain + preamp)))
-			}))
+			.map((b) => {
+				let db = preamp;
+				for (const band of bands) {
+					db += bandResponse(band, b.freq);
+				}
+				db = Math.max(dbMin, Math.min(dbMax, db));
+				return { x: toX(b.freq), y: toY(db) };
+			})
 	);
 
 	// --- Grid ---
-	const freqGridValues = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
-	const freqGridLabels = ['20', '50', '100', '200', '500', '1k', '2k', '5k', '10k', '20k'];
+	const freqGridAll: number[] = [];
+	for (const decade of [10, 100, 1000, 10000]) {
+		for (let m = 1; m <= 9; m++) {
+			const f = decade * m;
+			if (f >= 20 && f <= 20000) freqGridAll.push(f);
+		}
+	}
+	const freqLabeled = new Map<number, string>([
+		[20, '20'], [50, '50'], [100, '100'], [200, '200'], [500, '500'],
+		[1000, '1k'], [2000, '2k'], [5000, '5k'], [10000, '10k'], [20000, '20k']
+	]);
 	const dbGridValues = [-12, -6, 0, 6, 12];
 </script>
 
-<svg viewBox="0 0 {W} {H}" preserveAspectRatio="none" class="h-full w-full">
+<div bind:clientWidth={W} bind:clientHeight={H} class="h-full w-full">
+<svg viewBox="0 0 {W} {H}" class="h-full w-full">
 	<!-- Horizontal grid lines + dB labels -->
 	{#each dbGridValues as db}
 		<line
@@ -115,7 +177,7 @@
 	{/each}
 
 	<!-- Vertical grid lines + freq labels -->
-	{#each freqGridValues as f, i}
+	{#each freqGridAll as f}
 		<line
 			x1={toX(f)}
 			y1={pad.top}
@@ -124,16 +186,18 @@
 			stroke="#42403E"
 			stroke-width="0.75"
 		/>
-		<text
-			x={toX(f)}
-			y={H - pad.bottom + 16}
-			text-anchor="middle"
-			fill="#42403E"
-			font-size="12"
-			font-family="JetBrains Mono, monospace"
-		>
-			{freqGridLabels[i]}
-		</text>
+		{#if freqLabeled.has(f)}
+			<text
+				x={toX(f)}
+				y={H - pad.bottom + 16}
+				text-anchor="middle"
+				fill="#42403E"
+				font-size="12"
+				font-family="JetBrains Mono, monospace"
+			>
+				{freqLabeled.get(f)}
+			</text>
+		{/if}
 	{/each}
 
 	<!-- Composite EQ curve -->
@@ -144,3 +208,4 @@
 		<circle cx={m.x} cy={m.y} r="4" fill="#f59e0b" opacity="0.85" />
 	{/each}
 </svg>
+</div>
