@@ -54,7 +54,7 @@
 </script>
 
 <div
-	class="fixed inset-0 grid grid-cols-[3fr_1fr] grid-rows-[50%_1fr_3.5rem] gap-1 bg-bg p-1 font-jbmono text-text"
+	class="fixed inset-0 grid grid-cols-[3fr_1fr] grid-rows-[50%_1fr_3.5rem] gap-1 bg-bg p-1 font-plex text-text"
 >
 	<div class="flex flex-col gap-2 rounded-lg bg-fg p-2">
 		<div class="flex flex-row items-center gap-3">

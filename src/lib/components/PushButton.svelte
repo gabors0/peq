@@ -31,7 +31,7 @@
 <style>
 	@reference "../../routes/layout.css";
 	.btn {
-		@apply flex items-center justify-center rounded-sm font-black uppercase text-text bg-fg cursor-pointer select-none transition-colors duration-75;
+		@apply flex items-center justify-center rounded-sm font-black uppercase text-text bg-fg cursor-pointer select-none transition-colors duration-75 leading-none;
 		box-shadow:
 			inset 0  2px 1px 0 #9C9996,
 			inset 0 -2px 1px 0 rgba(0,0,0,0.5),

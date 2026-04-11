@@ -13,7 +13,7 @@
 
 <div class="inline-grid shrink-0 grid-cols-2 gap-0.75 p-0.5 rounded-md bg-bg">
 	{#each modes as mode}
-		<label class="btn flex items-center justify-center w-8 h-8 rounded-sm text-xs font-black uppercase text-text bg-fg cursor-pointer select-none" for="{id}-{mode}">
+		<label class="btn flex items-center justify-center w-8 h-8 rounded-sm text-xs font-black uppercase text-text bg-fg cursor-pointer select-none leading-0" for="{id}-{mode}">
 			<input
 				type="radio"
 				class="sr-only"

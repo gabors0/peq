@@ -51,4 +51,4 @@
         onkeydown={handleKeydown}
     />
 </div>
-<span class="">{label}</span>
+<b class="">{label}</b>
