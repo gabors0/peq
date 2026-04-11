@@ -133,7 +133,7 @@
 	.vertical-range::-webkit-slider-thumb {
 		@apply h-7.5 w-5;
 		background: linear-gradient(
-			to bottom,
+			to top,
 			#666563 15%,
 			#ccc9c6 16%,
 			#999794 45%,
@@ -148,7 +148,7 @@
 		width: 20px;
 		height: 30px;
 		background: linear-gradient(
-			to bottom,
+			to top,
 			#666563 15%,
 			#ccc9c6 16%,
 			#999794 45%,

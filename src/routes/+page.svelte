@@ -54,7 +54,7 @@
 </script>
 
 <div
-	class="fixed inset-0 grid grid-cols-[3fr_1fr] grid-rows-2 gap-1 bg-bg p-1 font-jbmono text-text"
+	class="fixed inset-0 grid grid-cols-[3fr_1fr] grid-rows-[50%_1fr_3.5rem] gap-1 bg-bg p-1 font-jbmono text-text"
 >
 	<div class="flex flex-col gap-2 rounded-lg bg-fg p-2">
 		<div class="flex flex-row items-center gap-3">
@@ -92,7 +92,7 @@
 			<PushButton size="lg" onclick={copyToClipboard}>{copied ? 'copied!' : 'copy'}</PushButton>
 		</div>
 	</div>
-	<div class="flex min-h-0 gap-2 rounded-lg bg-fg p-2">
+	<div class="row-span-2 flex min-h-0 gap-2 rounded-lg bg-fg p-2">
 		<div
 			class="flex min-h-0 flex-col items-center gap-1 rounded-sm px-2 py-2 outline-3 outline-text"
 		>
@@ -111,5 +111,19 @@
 			{/each}
 		</div>
 	</div>
-	<div class="rounded-lg bg-fg p-2">D</div>
+	<div class="rounded-lg bg-fg p-2">
+		<div class="flex flex-row items-center gap-3">
+			<hr class="w-full rounded-full border-3 border-text" />
+			<b class="text-center text-nowrap">UPLOAD AUDIO FILE</b>
+			<hr class="w-full rounded-full border-3 border-text" />
+		</div>
+		<div class="flex h-full items-center justify-center">Coming soon (maybe)</div>
+	</div>
+	<div class="rounded-lg bg-fg p-2 gap-2 flex items-center justify-center [&_a]:hover:underline">
+		<span>made by <a href="https://gs0.me" target="_blank">gabors0</a></span>
+		<span class="select-none">•</span>
+		<a href="https://github.com/gabors0/peq" target="_blank">github</a>
+		<span class="select-none">•</span>
+		<a href="https://ko-fi.com/gabors0" target="_blank">ko-fi</a>
+	</div>
 </div>
