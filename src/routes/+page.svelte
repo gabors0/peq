@@ -2,9 +2,8 @@
 	import PushButton from '$lib/components/PushButton.svelte';
 	import ControlRow from '$lib/components/ControlRow.svelte';
 	import Slider from '$lib/components/Slider.svelte';
-
-	type BandMode = 'off' | 'pk' | 'hs' | 'ls';
-	type Band = { mode: BandMode; gain: number; freq: number; q: number };
+	import EqGraph from '$lib/components/EqGraph.svelte';
+	import type { BandMode, Band } from '$lib/types';
 
 	let preamp = $state(0);
 
@@ -63,11 +62,8 @@
 			<b class="text-center text-nowrap">FREQUENCY GRAPH</b>
 			<hr class="w-full rounded-full border-3 border-text" />
 		</div>
-		<div class="flex h-full rounded-sm bg-black p-2">
-			<span
-				class="flex flex-1 items-center justify-center bg-neutral-800 px-1 font-doto text-xl leading-6 text-stone-900"
-			>
-			</span>
+		<div class="flex min-h-0 flex-1 rounded-sm bg-black p-2">
+			<EqGraph {bands} {preamp} />
 		</div>
 	</div>
 	<div class="flex flex-col gap-2 rounded-lg bg-fg p-2">
