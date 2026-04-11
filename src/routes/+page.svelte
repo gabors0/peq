@@ -53,10 +53,22 @@
 	}
 </script>
 
+<!-- mobile block message -->
 <div
-	class="fixed inset-0 grid grid-cols-[3fr_1fr] grid-rows-[50%_1fr_3.5rem] gap-1 bg-bg p-1 font-plex text-text"
+	class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-bg p-8 font-plex text-fg md:hidden"
 >
-	<div class="flex flex-col gap-2 rounded-lg bg-fg p-2">
+	<b class="text-2xl">Screen too narrow</b>
+	<p class="text-center text-lg">
+	Sorry, mobile isn't supported (yet).
+	</p>
+</div>
+
+<div
+	class="hidden auto-rows-auto gap-1 bg-bg p-1 font-plex text-text md:grid md:grid-cols-2 xl:fixed xl:inset-0 xl:grid-cols-[3fr_1fr] xl:grid-rows-[50%_1fr_3.5rem] xl:overflow-hidden"
+>
+	<div
+		class="order-1 col-span-2 flex min-h-75 flex-col gap-2 rounded-lg bg-fg p-2 xl:order-0 xl:col-span-1 xl:min-h-0"
+	>
 		<div class="flex flex-row items-center gap-3">
 			<hr class="w-full rounded-full border-3 border-text" />
 			<b class="text-center text-nowrap">FREQUENCY GRAPH</b>
@@ -66,7 +78,7 @@
 			<EqGraph {bands} {preamp} />
 		</div>
 	</div>
-	<div class="flex flex-col gap-2 rounded-lg bg-fg p-2">
+	<div class="order-3 flex min-h-62.5 flex-col gap-2 rounded-lg bg-fg p-2 xl:order-0 xl:min-h-0">
 		<div class="flex flex-row items-center gap-3">
 			<hr class="w-full rounded-full border-3 border-text" />
 			<b class="text-center text-nowrap">EXPORT TO FILE</b>
@@ -92,14 +104,16 @@
 			<PushButton size="lg" onclick={copyToClipboard}>{copied ? 'copied!' : 'copy'}</PushButton>
 		</div>
 	</div>
-	<div class="row-span-2 flex min-h-0 gap-2 rounded-lg bg-fg p-2">
+	<div
+		class="order-2 col-span-2 flex max-h-125 gap-2 rounded-lg bg-fg p-2 xl:order-0 xl:col-span-1 xl:row-span-2 xl:max-h-none"
+	>
 		<div
 			class="flex min-h-0 flex-col items-center gap-1 rounded-sm px-2 py-2 outline-3 outline-text"
 		>
 			<b class="text-xs text-text">PRE</b>
 			<Slider mode="gain" orientation="vertical" id="preamp" bind:value={preamp} />
 		</div>
-		<div class="min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
+		<div class="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
 			{#each bands as band, i}
 				<ControlRow
 					rowNo={i + 1}
@@ -111,7 +125,7 @@
 			{/each}
 		</div>
 	</div>
-	<div class="rounded-lg bg-fg p-2">
+	<div class="order-4 rounded-lg bg-fg p-2 xl:order-0">
 		<div class="flex flex-row items-center gap-3">
 			<hr class="w-full rounded-full border-3 border-text" />
 			<b class="text-center text-nowrap">UPLOAD AUDIO FILE</b>
@@ -119,7 +133,9 @@
 		</div>
 		<div class="flex h-full items-center justify-center">Coming soon (maybe)</div>
 	</div>
-	<div class="rounded-lg bg-fg p-2 gap-2 flex items-center justify-center [&_a]:hover:underline">
+	<div
+		class="order-5 col-span-2 flex items-center justify-center gap-2 rounded-lg bg-fg p-2 xl:order-0 xl:col-span-1 [&_a]:hover:underline"
+	>
 		<span>made by <a href="https://gs0.me" target="_blank">gabors0</a></span>
 		<span class="select-none">•</span>
 		<a href="https://github.com/gabors0/peq" target="_blank">github</a>
