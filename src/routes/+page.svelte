@@ -11,7 +11,7 @@
 		Array.from({ length: 20 }, () => ({ mode: 'off' as BandMode, gain: 0, freq: 1000, q: 1.0 }))
 	);
 
-	let exportString = $state('');
+	let exportString = $state('Change some things then press update to export the profile!');
 
 	function updateExport() {
 		let filterNo = 1;
