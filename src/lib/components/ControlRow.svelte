@@ -20,7 +20,7 @@
 
 <div class="bg-fg rounded-sm p-4 gap-2 flex items-center">
     <div class="font-bold text-fg bg-text px-2 self-stretch w-9 flex justify-center items-center rounded-sm">{rowNo}</div>
-	<ModeBtns id={`mode-${rowNo}`} bind:value={mode} />
+	<ModeBtns bind:value={mode} />
     <span class="border-l border-3 my-0.5 rounded-md self-stretch border-text"></span>
 	<div class="flex flex-col gap-2 flex-1 min-w-0">
 		<Slider mode="gain" id={`slider-G-${rowNo}`} disabled={mode === 'off'} bind:value={gain} />
